@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  clerkUserId       String    @unique // Clerk user ID
+  email             String    @unique
+  name              String?
+  image             String?
+  industry          String?
+  insights          IndustryInsights? @relation(fields: [industry], references: [industry])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Profile
+  bio               String?
+  experience        Int?
+  skills            String[]
+
+  assessments       Assessment[]
+  resume            Resume?
+  coverLetters      CoverLetter[]
+}
+
+model Assessment {
+  id                String    @id @default(uuid())
+  userId            String    @unique  // Ensure uniqueness for one-to-one relation
+  user              User      @relation(fields: [userId], references: [id])
+  quizScore         Float
+  questions         Json[]
+  category          String
+  improvements      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Resume {
+  id                String    @id @default(uuid())
+  userId            String    @unique  // Ensure uniqueness for one-to-one relation
+  user              User      @relation(fields: [userId], references: [id])
+  content           String
+  feedback          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+
+model CoverLetter {
+  id                String    @id @default(uuid())
+  userId            String    @unique  // Ensure uniqueness for one-to-one relation
+  user              User      @relation(fields: [userId], references: [id])
+  content           String
+  jobDescription    String?
+  companyName       String
+  jobTitle          String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+
+model IndustryInsights {
+  id                String    @id @default(uuid())
+  industry          String    @unique
+  users             User[]
+  salaryRanges      Json[]
+  growthRate        Float
+  demandLevel       DemandLevel
+  topSkills         String[]
+
+  marketOutlook     MarketOutlook
+  keyTrends         String[]
+  recommendedSkills String[]
+
+  lastUpdated       DateTime  @default(now())
+  nextUpdateDue     DateTime
+
+  @@index([industry])
+}
+
+enum DemandLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum MarketOutlook {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+} 
