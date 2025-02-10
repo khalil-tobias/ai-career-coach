@@ -45,7 +45,7 @@ Sensai is an AI-powered career coaching platform designed to help professionals 
 For questions or feedback, feel free to reach out:
 
 - **Email**: khaliltobias302@gmail.com
-- **GitHub**: [your-username](https://github.com/khalil-tobias)
+- **GitHub**: (https://github.com/khalil-tobias)
 
 ---
 
